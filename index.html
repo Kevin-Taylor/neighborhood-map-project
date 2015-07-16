@@ -1,0 +1,33 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <meta charset="utf-8"> 
+    <title>Neighborhood Map Project</title> 
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+    <link href="css/style.css" rel="stylesheet"> 
+</head> 
+<body> 
+    <div class="container">  
+        <div class="row">
+            <h2>Selected restaurants and bars near the river in Antioch, CA</h2>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <input id="pac-input" class="controls" type="text" placeholder="Refine List" data-bind="value: filter, valueUpdate: 'keyup'">
+        </div>
+        <div id="list" class="row">      
+            <ul data-bind="foreach: filterList()">
+                <li data-bind="text: name, click: $parent.OpenInfoWindow"></li>
+            </ul>
+        </div>        
+        <div id="map-canvas"></div>
+    </div>
+
+     <script src="http://maps.googleapis.com/maps/api/js?libraries=places""></script> 
+     <script src="js/libs/jquery.min.js"></script>  
+     <script src="js/libs/knockout-3.3.0.js"></script> 
+     <script src="js/app.js"></script> 
+ </body> 
+ </html> 
