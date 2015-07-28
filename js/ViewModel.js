@@ -18,8 +18,8 @@ var Model = {
         },
         {
         name: "Riverview Lodge Restaurant",
-        lat: 38.0159683,
-        long: -121.811846,
+        lat: 38.0181891,
+        long: -121.8155961,
         url:  'http://www.riverviewlodgeantioch.com/',
         yelpID: 'riverview-lodge-antioch',
         },
@@ -211,56 +211,64 @@ var ViewModel = function(){
 
     self.yelpResponse = function(){
 
-        var auth = {
-            consumerKey : "BiCBDxZsFj7KVvGLNb9jYw",
-            consumerSecret : "7OoDf9QonYUw2HZZVuSDTTLHrsE",
-            accessToken : "wtmCT_LqLQfGktztQ_k989t7du3Vs8xY",
-            accessTokenSecret : "gp_EFPJ8jAwJ7XAZVB2xh8le1Mo",
-            serviceProvider : {
-                signatureMethod : "HMAC-SHA1"
+        function nonce_generate(){
+            return (Math.floor(Math.random() * 1e12).toString());
+        } 
+
+        var yelp_url = 'http://api.yelp.com/v2/' + 'business/' + yelpId;
+
+        var parameters = {
+            oauth_consumer_key: "BiCBDxZsFj7KVvGLNb9jYw",
+            oauth_token: "wtmCT_LqLQfGktztQ_k989t7du3Vs8xY",
+            oauth_nonce: nonce_generate(),
+            oauth_timestamp: Math.floor(Date.now()/1000),
+            oauth_signature_method: 'HMAC-SHA1',
+            oauth_version : '1.0',
+            callback: 'cb'
+        };
+
+        var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, "7OoDf9QonYUw2HZZVuSDTTLHrsE", "gp_EFPJ8jAwJ7XAZVB2xh8le1Mo");
+        parameters.oauth_signature = encodedSignature;
+
+        var settings = {
+            url: yelp_url,
+            data: parameters,
+            cache: true,
+            dataType: 'jsonp',
+            success: function(results){
+
+// Parse the results
+
+                var image = results['image_url'];
+                var name = results['name'];
+                var address1 = results['location']['display_address'][0];
+                var address2 = results['location']['display_address'][1];
+                var tn = results['display_phone'];
+                var ratingUrl = results['rating_img_url_small'];
+                var yelpUrl = results['url'];
+
+                infowindow.close(); 
+
+// Use bootbox library to display results
+
+                bootbox.alert({
+                    title: "<img src=" + image + ">" + "&nbsp&nbsp" + name,
+                    message: address1 + "<br>" + address2 + "<br>" + tn + "<br><br>" +
+                            "<a href=" + yelpUrl + ">Click Here For More Information </a><br>" +
+                            "Rating: <img src=" + ratingUrl + "><br><img src='img/yelp.gif'>",
+                    closeButton: false,
+                    className: "dialog-wrapper"
+                });
+
+            },
+            error: function(){
+                // Do stuff on fail
+
+                alert("Unable to display Yelp information at this time."); 
             }
         };
 
-// Test data to get a response
-
-        var terms = 'food';
-            var near = 'San+Francisco';
-
-            var accessor = {
-                consumerSecret : auth.consumerSecret,
-                tokenSecret : auth.accessTokenSecret
-            };
-            parameters = [];
-            parameters.push(['term', terms]);
-            parameters.push(['location', near]);
-            parameters.push(['callback', 'cb']);
-            parameters.push(['oauth_consumer_key', auth.consumerKey]);
-            parameters.push(['oauth_consumer_secret', auth.consumerSecret]);
-            parameters.push(['oauth_token', auth.accessToken]);
-            parameters.push(['oauth_signature_method', 'HMAC-SHA1']);
-
-            var message = {
-                'action' : 'http://api.yelp.com/v2/search',
-                'method' : 'GET',
-                'parameters' : parameters
-            };
-
-            OAuth.setTimestampAndNonce(message);
-            OAuth.SignatureMethod.sign(message, accessor);
-
-            var parameterMap = OAuth.getParameterMap(message.parameters);
-            console.log(parameterMap);
-
-
-            $.ajax({
-                'url' : message.action,
-                'data' : parameterMap,
-                'dataType' : 'jsonp',
-                'jsonpCallback' : 'cb',
-                'success' : function(data, textStats, XMLHttpRequest) {
-                    console.log(data);
-                }
-            });
+        $.ajax(settings);
 
     }; // End yelpResponse function
 

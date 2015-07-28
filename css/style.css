@@ -1,46 +1,42 @@
 body {background-color: #0FF;}
 
-#map { 
-	position: absolute; 
-	width: 95%; 
-	height: 100%; 
-} 
-
+#map {
+	position: absolute;
+	width: 95%;
+	height: 100%;
+}
 
 #list ul {list-style-type: none;}
 
+ul {
+	list-style-type: none;
+	padding-left: 15px;
+	margin: 0px;
+}
 
-ul { 
-	list-style-type: none; 
-	padding-left: 15px; 
-	margin: 0px; 
-} 
+ul li {
+	cursor: pointer;
+	width: 35%;
+}
 
-ul li { 
-	cursor: pointer; 
-} 
-
-.selected, ul li:hover { 
+.selected, ul li:hover {
 	font-weight: bold;
-} 
+}
 
+#map-unavailable {
+	width: 100%;
+	min-height: 100%;
+	position: absolute;
+	z-index: 20;
+	visibility: hidden;
+}
 
-#map-unavailable { 
-	width: 100%; 
-	min-height: 100%; 
-	position: absolute; 
-	z-index: 20; 
-	visibility: hidden; 
-} 
-
-
-
-.dialog-wrapper { 
-	color: blue; 
-	position: relative; 
-	width: 80%; 
-	height: 80%; 
-	z-index: 1041; 
-	margin-left: 10%; 
-	margin-top: 10%; 
-} 
+.dialog-wrapper {
+	color: blue;
+	position: relative;
+	width: 80%;
+	height: 80%;
+	z-index: 1041;
+	margin-left: 10%;
+	margin-top: 10%;
+}
